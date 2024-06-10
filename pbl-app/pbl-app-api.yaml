@@ -1,0 +1,624 @@
+openapi: 3.0.3
+info:
+  title: pbl-api
+  version: 0.0.1
+tags:
+  - name: thread
+    description: スレッド情報
+  - name: manual
+    description: マニュアルド情報
+  - name: user
+    description: ユーザー情報
+  - name: comment
+    description: コメント情報
+  - name: school
+    description: 学校情報
+paths:
+  /users:
+    get:
+      tags:
+        - user
+      summary: ユーザー一覧取得API
+      description: |
+        ユーザーをデフォルトで全件取得して返却します <br>
+        idの昇順。
+      responses:
+        200:
+          description: success operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    email:
+                      type: string
+                    setting:
+                      type: boolean
+                    school:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+                      required:
+                        - id
+                        - name
+                    posts:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          name:
+                            type: string
+                        required:
+                          - id
+                          - name
+                  required:
+                    - id
+                    - name
+                    - email
+                    - setting
+                    - school
+                    - post
+    post:
+      tags:
+        - user
+      summary: ユーザー登録API
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                name:
+                  type: string
+              required:
+                - email
+                - name
+
+      responses:
+        200:
+          description: success operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  email:
+                    type: string
+                  setting:
+                    type: boolean
+                  school:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      name:
+                        type: string
+                    required:
+                      - id
+                      - name
+                  posts:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+                      required:
+                        - id
+                        - name
+                required:
+                  - id
+                  - name
+                  - email
+                  - setting
+                  - school
+                  - post
+    put:
+      tags:
+        - user
+      summary: ユーザー情報更新API
+      description: email, name, schoolId, setting, posts の変更
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                name:
+                  type: string
+                schoolId:
+                  type: string
+                setting:
+                  type: boolean
+                postIds:
+                  type: array
+                  items:
+                    type: string
+              required:
+                - email
+                - name
+                - schoolId
+                - setting
+                - postIds
+
+      responses:
+        200:
+          description: success operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  email:
+                    type: string
+                  setting:
+                    type: boolean
+                  school:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      name:
+                        type: string
+                    required:
+                      - id
+                      - name
+                  posts:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+                      required:
+                        - id
+                        - name
+                required:
+                  - id
+                  - name
+                  - email
+                  - setting
+                  - school
+                  - post
+
+  /users/{userId}:
+    get:
+      tags:
+        - user
+      summary: ユーザー詳細API
+      description: |
+        ユーザー詳細を取得して返却します <br>
+      parameters:
+        - name: userId
+          in: path
+          description: ユーザーID
+          required: true
+          schema:
+            type: string
+            example: 248c8027-b752-db4c-76c1-fb22a05e9591
+            nullable: false
+      responses:
+        200:
+          description: success operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  email:
+                    type: string
+                  setting:
+                    type: boolean
+                  school:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      name:
+                        type: string
+                    required:
+                      - id
+                      - name
+                  posts:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+                      required:
+                        - id
+                        - name
+                required:
+                  - id
+                  - name
+                  - email
+                  - setting
+                  - school
+                  - posts
+
+  /user/{userId}/thread:
+    get:
+      tags:
+        - thread
+        - user
+      summary: スレッド一覧取得API
+      description: |
+        自分が参加中、作成したスレッドで全件取得して返却します <br>
+        更新日の昇順。
+      parameters:
+        - name: userId
+          in: path
+          description: ユーザーID
+          required: true
+          schema:
+            type: string
+            example: fafadfgaghfklfafaffd34542afda
+            nullable: false
+      responses:
+        200:
+          description: success operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    title:
+                      type: string
+                    description:
+                      type: string
+                    createdAt:
+                      type: string
+                      example: "2020-01-31"
+                      format: date
+                    updatedAt:
+                      type: string
+                      example: "2020-01-31"
+                      format: date
+                    status:
+                      type: number
+                      description: "1:進行中, 2:マニュアル作成準備中, 3:解決"
+                    school:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+                      required:
+                        - id
+                        - name
+                    author:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+                      required:
+                        - id
+                        - name
+                    subscribers:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          name:
+                            type: string
+                        required:
+                          - id
+                          - name
+                  required:
+                    - id
+                    - title
+                    - description
+                    - createdAt
+                    - updatedAt
+                    - status
+                    - school
+                    - author
+                    - subscribers
+
+  /users/email/{email}:
+    get:
+      tags:
+        - user
+      summary: ユーザー詳細API
+      description: |
+        ユーザー詳細を取得して返却します <br>
+      parameters:
+        - name: userId
+          in: path
+          description: ユーザーID
+          required: true
+          schema:
+            type: string
+            example: xxx@gmail.com
+            nullable: false
+      responses:
+        200:
+          description: success operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  email:
+                    type: string
+                  setting:
+                    type: boolean
+                  school:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      name:
+                        type: string
+                    required:
+                      - id
+                      - name
+                  posts:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+                      required:
+                        - id
+                        - name
+                required:
+                  - id
+                  - name
+                  - email
+                  - setting
+                  - school
+                  - post
+
+  /thread:
+    post:
+      tags:
+        - thread
+      summary: スレッド作成API
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+              required:
+                - title
+                - description
+
+      responses:
+        200:
+          description: success operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  title:
+                    type: string
+                  description:
+                    type: string
+                  createdAt:
+                    type: string
+                    example: "2020-01-31"
+                    format: date
+                  updatedAt:
+                    type: string
+                    example: "2020-01-31"
+                    format: date
+                  status:
+                    type: number
+                    description: "1:進行中, 2:マニュアル作成準備中, 3:解決"
+                  school:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      name:
+                        type: string
+                    required:
+                      - id
+                      - name
+                  author:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      name:
+                        type: string
+                    required:
+                      - id
+                      - name
+                  subscribers:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+                      required:
+                        - id
+                        - name
+                required:
+                  - id
+                  - title
+                  - description
+                  - createdAt
+                  - updatedAt
+                  - status
+                  - school
+                  - author
+                  - subscribers
+
+  /thread/{threadId}:
+    get:
+      tags:
+        - thread
+      summary: スレッド詳細取得API
+      description: |
+        スレッドの詳細を取得するAPI
+      parameters:
+        - name: threadId
+          in: path
+          description: スレッドID
+          required: true
+          schema:
+            type: string
+            example: fafadfgaghfklfafaffd34542afda
+            nullable: false
+      responses:
+        200:
+          description: success operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  title:
+                    type: string
+                  description:
+                    type: string
+                  createdAt:
+                    type: string
+                    example: "2020-01-31"
+                    format: date
+                  updatedAt:
+                    type: string
+                    example: "2020-01-31"
+                    format: date
+                  status:
+                    type: number
+                    description: "1:進行中, 2:マニュアル作成準備中, 3:解決"
+                  school:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      name:
+                        type: string
+                    required:
+                      - id
+                      - name
+                  author:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      name:
+                        type: string
+                    required:
+                      - id
+                      - mame
+                  subscribers:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+                      required:
+                        - id
+                        - name
+                  comment:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        author:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            name:
+                              type: string
+                        content:
+                          type: string
+                        createdAt:
+                          type: string
+                          example: "2020-01-31"
+                          format: date
+                        isSelected:
+                          type: boolean
+                        addressId:
+                          type: string
+                          description: 返信先のID
+                      required:
+                        - id
+                        - author
+                        - content
+                        - createdAt
+                        - isSelected
+                required:
+                  - id
+                  - title
+                  - description
+                  - createdAt
+                  - updatedAt
+                  - status
+                  - school
+                  - author
+                  - subscribers
+                  - comment
