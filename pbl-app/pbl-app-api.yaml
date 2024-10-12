@@ -273,7 +273,6 @@ paths:
   /user/{userId}/thread:
     get:
       tags:
-        - thread
         - user
       summary: スレッド一覧取得API
       description: |
@@ -357,6 +356,64 @@ paths:
                     - school
                     - author
                     - subscribers
+
+  /user/{userId}/manual:
+    get:
+      tags:
+        - user
+      summary: スレッド一覧取得API
+      description: |
+        自分が閲覧できるマニュアル全件取得して返却します <br>
+        更新日の昇順。
+      parameters:
+        - name: userId
+          in: path
+          description: ユーザーID
+          required: true
+          schema:
+            type: string
+            example: fafadfgaghfklfafaffd34542afda
+            nullable: false
+      responses:
+        200:
+          description: success operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    threadId:
+                      type: string
+                    title:
+                      type: string
+                    content:
+                      type: string
+                    createdAt:
+                      type: string
+                      example: "2020-01-31"
+                      format: date
+                    school:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+                      required:
+                        - id
+                        - name
+                  required:
+                    - id
+                    - threadId
+                    - title
+                    - content
+                    - createdAt
+                    - school
+                    - manuals
 
   /users/email/{email}:
     get:
@@ -580,7 +637,7 @@ paths:
                       required:
                         - id
                         - name
-                  comment:
+                  comments:
                     type: array
                     items:
                       type: object
@@ -611,6 +668,26 @@ paths:
                         - content
                         - createdAt
                         - isSelected
+                  manuals:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        title:
+                          type: string
+                        content:
+                          type: string
+                        createdAt:
+                          type: string
+                          example: "2020-01-31"
+                          format: date
+                      required:
+                        - id
+                        - title
+                        - content
+                        - createdAt
                 required:
                   - id
                   - title
@@ -621,4 +698,274 @@ paths:
                   - school
                   - author
                   - subscribers
-                  - comment
+                  - comments
+                  - manuals
+    put:
+      tags:
+        - thread
+      summary: スレッド詳細更新API
+      description: |
+        スレッドの詳細を取得するAPI
+      parameters:
+        - name: threadId
+          in: path
+          description: スレッドID
+          required: true
+          schema:
+            type: string
+            example: fafadfgaghfklfafaffd34542afda
+            nullable: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                status:
+                  type: number
+                subscriberIds:
+                  type: array
+                  items:
+                    type: string
+              required:
+                - title
+                - description
+                - status
+                - subscribers
+
+      responses:
+        200:
+          description: success operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  title:
+                    type: string
+                  description:
+                    type: string
+                  createdAt:
+                    type: string
+                    example: "2020-01-31"
+                    format: date
+                  updatedAt:
+                    type: string
+                    example: "2020-01-31"
+                    format: date
+                  status:
+                    type: number
+                    description: "1:進行中, 2:マニュアル作成準備中, 3:解決"
+                  school:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      name:
+                        type: string
+                    required:
+                      - id
+                      - name
+                  author:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      name:
+                        type: string
+                    required:
+                      - id
+                      - mame
+                  subscribers:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+                      required:
+                        - id
+                        - name
+                  comments:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        author:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            name:
+                              type: string
+                        content:
+                          type: string
+                        createdAt:
+                          type: string
+                          example: "2020-01-31"
+                          format: date
+                        isSelected:
+                          type: boolean
+                        addressId:
+                          type: string
+                          description: 返信先のID
+                      required:
+                        - id
+                        - author
+                        - content
+                        - createdAt
+                        - isSelected
+                  manuals:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        title:
+                          type: string
+                        content:
+                          type: string
+                        createdAt:
+                          type: string
+                          example: "2020-01-31"
+                          format: date
+                      required:
+                        - id
+                        - title
+                        - content
+                        - createdAt
+                required:
+                  - id
+                  - title
+                  - description
+                  - createdAt
+                  - updatedAt
+                  - status
+                  - school
+                  - author
+                  - subscribers
+                  - comments
+                  - manuals
+
+  /manual/{manualId}:
+    get:
+      tags:
+        - manual
+      summary: マニュアル詳細取得API
+      description: |
+        マニュアルの詳細を取得するAPI
+      parameters:
+        - name: manualId
+          in: path
+          description: マニュアルID
+          required: true
+          schema:
+            type: string
+            example: fafadfgaghfklfafaffd34542afda
+            nullable: false
+      responses:
+        200:
+          description: success operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  threadId:
+                    type: string
+                  title:
+                    type: string
+                  content:
+                    type: string
+                  createdAt:
+                    type: string
+                    example: "2020-01-31"
+                    format: date
+                  school:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      name:
+                        type: string
+                    required:
+                      - id
+                      - name
+                required:
+                  - id
+                  - threadId
+                  - title
+                  - content
+                  - createdAt
+                  - school
+                  - manuals
+    put:
+      tags:
+        - manual
+      summary: マニュアル詳細更新API
+      description: title, contentの変更
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                content:
+                  type: string
+              required:
+                - title
+                - content
+
+      responses:
+        200:
+          description: success operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  threadId:
+                    type: string
+                  title:
+                    type: string
+                  content:
+                    type: string
+                  createdAt:
+                    type: string
+                    example: "2020-01-31"
+                    format: date
+                  school:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      name:
+                        type: string
+                    required:
+                      - id
+                      - name
+                required:
+                  - id
+                  - threadId
+                  - title
+                  - content
+                  - createdAt
+                  - school
+                  - manuals

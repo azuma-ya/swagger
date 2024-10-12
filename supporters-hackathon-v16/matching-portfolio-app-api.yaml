@@ -1,0 +1,509 @@
+openapi: 3.0.3
+info:
+  title: matching-portfolio-app-api
+  version: 0.0.1
+tags:
+  - name: auth
+    description: 認証情報
+  - name: user
+    description: ユーザー情報
+  - name: company
+    description: 企業情報
+  - name: log
+    description: 活動記録情報
+paths:
+  /auth:
+    post:
+      tags:
+        - auth
+      summary: ユーザー登録API
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                name:
+                  type: string
+                password:
+                  type: string
+              required:
+                - email
+                - name
+                - password
+      responses:
+        200:
+          description: success operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserSettings"
+
+  /auth/sign-in:
+    post:
+      tags:
+        - auth
+      summary: ログインAPI
+      description: ユーザー・企業どちらも利用する
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+              required:
+                - email
+                - password
+      responses:
+        200:
+          description: success operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserSettings"
+
+  /users:
+    get:
+      tags:
+        - user
+      summary: ユーザー一覧取得API
+      parameters:
+        - name: offset
+          in: query
+          schema:
+            type: number
+            example: 2
+        - name: per
+          in: query
+          schema:
+            type: number
+            example: 10
+      responses:
+        200:
+          description: success operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/User"
+                  totalUsers:
+                    type: integer
+
+  /users/{userId}:
+    get:
+      tags:
+        - user
+      summary: ユーザー詳細API
+      description: ユーザー詳細を取得して返却します
+      parameters:
+        - name: userId
+          in: path
+          description: ユーザーID
+          required: true
+          schema:
+            type: string
+            example: 248c8027-b752-db4c-76c1-fb22a05e9591
+            nullable: false
+      responses:
+        200:
+          description: success operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserDetail"
+
+    put:
+      tags:
+        - user
+      summary: ユーザー情報更新API
+      description: email, name, schoolId, setting, posts の変更
+      parameters:
+        - name: userId
+          in: path
+          description: ユーザーID
+          required: true
+          schema:
+            type: string
+            example: 248c8027-b752-db4c-76c1-fb22a05e9591
+            nullable: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+
+      responses:
+        200:
+          description: success operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserSettings"
+
+  /companys:
+    get:
+      tags:
+        - company
+      summary: 企業一覧取得API
+      parameters:
+        - name: offset
+          in: query
+          schema:
+            type: number
+            example: 2
+        - name: per
+          in: query
+          schema:
+            type: number
+            example: 10
+      responses:
+        200:
+          description: success operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  companys:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Company"
+                  totalcompanys:
+                    type: integer
+
+  /companys/{companyId}:
+    get:
+      tags:
+        - company
+      summary: 企業詳細API
+      description: 企業詳細を取得して返却します
+      parameters:
+        - name: companyId
+          in: path
+          description: 企業ID
+          required: true
+          schema:
+            type: string
+            example: 248c8027-b752-db4c-76c1-fb22a05e9591
+            nullable: false
+      responses:
+        200:
+          description: success operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CompanyDetail"
+
+    put:
+      tags:
+        - company
+      summary: 企業情報更新API
+      description: email, name, schoolId, setting, posts の変更
+      parameters:
+        - name: companyId
+          in: path
+          description: 企業ID
+          required: true
+          schema:
+            type: string
+            example: 248c8027-b752-db4c-76c1-fb22a05e9591
+            nullable: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+
+      responses:
+        200:
+          description: success operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CompanySettings"
+
+  /users/{userId}/logs:
+    get:
+      tags:
+        - log
+      summary: 活動記録一覧取得API
+      description: 特定企業の活動記録の昇順を返却します
+      parameters:
+        - name: userId
+          in: path
+          description: 企業ID
+          required: true
+          schema:
+            type: string
+            example: fafadfgaghfklfafaffd34542afda
+            nullable: false
+        - name: offset
+          in: query
+          schema:
+            type: number
+            example: 2
+        - name: per
+          in: query
+          schema:
+            type: number
+            example: 10
+      responses:
+        200:
+          description: success operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  logs:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Log"
+                  totalLogs:
+                    type: integer
+
+  /logs:
+    post:
+      tags:
+        - log
+      summary: 活動記録作成API
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                title:
+                  type: string
+                content:
+                  type: string
+              required:
+                - id
+                - title
+                - content
+      responses:
+        200:
+          description: success operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LogDetail"
+
+    put:
+      tags:
+        - log
+      summary: 活動記録更新API
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                content:
+                  type: string
+              required:
+                - title
+                - content
+      responses:
+        200:
+          description: success operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LogDetail"
+
+components:
+  schemas:
+    Tag:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+
+    UserIcon:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        image:
+          type: string
+
+    UserBaseInfo:
+      type: object
+      properties:
+        address:
+          type: string
+        phoneNumber:
+          type: string
+        email:
+          type: string
+        sex:
+          type: string
+        dateOfBirth:
+          type: string
+
+    UserAcademicBackground:
+      type: object
+      properties:
+        type:
+          type: string
+        name:
+          type: string
+        department:
+          type: string
+        detail:
+          type: string
+        graduation:
+          type: string
+          format: date-time
+
+    UserExprience:
+      type: object
+      properties:
+        programming:
+          type: array
+          items:
+            $ref: "#/components/schemas/Tag"
+        skills:
+          type: array
+          items:
+            $ref: "#/components/schemas/Tag"
+
+    User:
+      allOf:
+        - $ref: "#/components/schemas/UserIcon"
+
+    UserDetail:
+      allOf:
+        - $ref: "#/components/schemas/User"
+        - properties:
+            baseInfo:
+              $ref: "#/components/schemas/UserBaseInfo"
+            academicBackgrounds:
+              type: array
+              items:
+                $ref: "#/components/schemas/UserAcademicBackground"
+            experience:
+              $ref: "#/components/schemas/UserExprience"
+            github:
+              type: string
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+
+    UserSettings:
+      allOf:
+        - $ref: "#/components/schemas/UserDetail"
+        - properties:
+            notification:
+              type: boolean
+
+    CompanyIcon:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        image:
+          type: string
+
+    CompanyBaseInfo:
+      type: object
+      properties:
+        address:
+          type: string
+        businessType:
+          type: string
+        capital:
+          type: string
+        dataOfEstablishment:
+          type: string
+          format: date-time
+        industry:
+          type: string
+        scale:
+          type: string
+
+    Company:
+      allOf:
+        - $ref: "#/components/schemas/CompanyIcon"
+        - properties:
+            baseInfo:
+              $ref: "#/components/schemas/CompanyBaseInfo"
+
+    CompanyDetail:
+      allOf:
+        - $ref: "#/components/schemas/Company"
+        - properties:
+            hero:
+              type: string
+            description:
+              type: string
+            skills:
+              type: array
+              items:
+                $ref: "#/components/schemas/Tag"
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+
+    CompanySettings:
+      allOf:
+        - $ref: "#/components/schemas/CompanyDetail"
+        - properties:
+            notification:
+              type: boolean
+
+    Log:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        author:
+          $ref: "#/components/schemas/UserIcon"
+        createdAt:
+          type: string
+          format: date-time
+
+    LogDetail:
+      allOf:
+        - $ref: "#/components/schemas/Log"
+        - properties:
+            content:
+              type: string
+            updatedAt:
+              type: string
+              format: date-time
