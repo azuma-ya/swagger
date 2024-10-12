@@ -153,7 +153,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/UserSettings"
 
-  /companys:
+  /companies:
     get:
       tags:
         - company
@@ -177,14 +177,14 @@ paths:
               schema:
                 type: object
                 properties:
-                  companys:
+                  companies:
                     type: array
                     items:
                       $ref: "#/components/schemas/Company"
-                  totalcompanys:
+                  totalcompanies:
                     type: integer
 
-  /companys/{companyId}:
+  /companies/{companyId}:
     get:
       tags:
         - company
@@ -236,7 +236,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/CompanySettings"
+                $ref: "#/components/schemas/CompanieSettings"
 
   /users/{userId}/logs:
     get:
@@ -478,7 +478,7 @@ components:
               type: string
               format: date-time
 
-    CompanySettings:
+    CompanieSettings:
       allOf:
         - $ref: "#/components/schemas/CompanyDetail"
         - properties:
