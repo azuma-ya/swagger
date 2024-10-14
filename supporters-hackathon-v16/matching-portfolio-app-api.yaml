@@ -334,6 +334,26 @@ paths:
               schema:
                 $ref: "#/components/schemas/LogDetail"
 
+  /logs/{logId}/likes:
+    post:
+      tags:
+        - log
+      summary: 活動記録いいねAPI
+      parameters:
+        - name: userId
+          in: query
+          description: ユーザーID
+          schema:
+            type: string
+            example: fafadfgaghfklfafaffd34542afda
+      responses:
+        200:
+          description: success operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LogDetail"
+
   /logs/weekly-summary:
     get:
       tags:
