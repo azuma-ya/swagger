@@ -84,6 +84,11 @@ paths:
           schema:
             type: number
             example: 10
+        - name: hasMessaged
+          in: query
+          schema:
+            type: boolean
+            example: true
       responses:
         200:
           description: success operation
@@ -238,21 +243,18 @@ paths:
               schema:
                 $ref: "#/components/schemas/CompanieSettings"
 
-  /users/{userId}/logs:
+  /logs:
     get:
       tags:
         - log
       summary: 活動記録一覧取得API
-      description: 特定企業の活動記録の昇順を返却します
       parameters:
         - name: userId
-          in: path
-          description: 企業ID
-          required: true
+          in: query
+          description: ユーザーID
           schema:
             type: string
             example: fafadfgaghfklfafaffd34542afda
-            nullable: false
         - name: offset
           in: query
           schema:
@@ -278,7 +280,6 @@ paths:
                   totalLogs:
                     type: integer
 
-  /logs:
     post:
       tags:
         - log
@@ -307,6 +308,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/LogDetail"
 
+  /logs/{logId}:
     put:
       tags:
         - log
@@ -331,6 +333,243 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/LogDetail"
+
+  /logs/weekly-summary:
+    get:
+      tags:
+        - log
+      summary: 活動記録一覧取得API
+      parameters:
+        - name: userId
+          in: query
+          description: ユーザーID
+          required: true
+          schema:
+            type: string
+            example: fafadfgaghfklfafaffd34542afda
+        - name: year
+          in: query
+          schema:
+            type: number
+            example: 2024
+      responses:
+        200:
+          description: success operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: number
+
+  /logs/liked:
+    get:
+      tags:
+        - log
+      summary: 良いねした活動記録一覧取得API
+      parameters:
+        - name: userId
+          in: query
+          description: ユーザーID
+          schema:
+            type: string
+            example: fafadfgaghfklfafaffd34542afda
+        - name: offset
+          in: query
+          schema:
+            type: number
+            example: 2
+        - name: per
+          in: query
+          schema:
+            type: number
+            example: 10
+      responses:
+        200:
+          description: success operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  logs:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/LogDetail"
+                  totalLogs:
+                    type: integer
+
+  /messages:
+    get:
+      tags:
+        - message
+      summary: メッセージ一覧取得API
+      parameters:
+        - name: id
+          in: query
+          description: ユーザーID/企業ID
+          required: true
+          schema:
+            type: string
+            example: fafadfgaghfklfafaffd34542afda
+      responses:
+        200:
+          description: success operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  allOf:
+                    - properties:
+                        type:
+                          type: string
+                          example: message | scout
+                    - anyOf:
+                        - $ref: "#/components/schemas/Message"
+                        - $ref: "#/components/schemas/Scout"
+
+    post:
+      tags:
+        - message
+      summary: メッセージ作成取得API
+      parameters:
+        - name: id
+          in: query
+          description: ユーザーID/企業ID
+          required: true
+          schema:
+            type: string
+            example: fafadfgaghfklfafaffd34542afda
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+              required:
+                - content
+      responses:
+        200:
+          description: success operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  allOf:
+                    - properties:
+                        type:
+                          type: string
+                          example: message | scout
+                    - anyOf:
+                        - $ref: "#/components/schemas/Message"
+                        - $ref: "#/components/schemas/Scout"
+
+  /scouts:
+    get:
+      tags:
+        - scout
+      summary: スカウト一覧取得API
+      parameters:
+        - name: companyId
+          in: query
+          description: 企業ID
+          required: true
+          schema:
+            type: string
+            example: fafadfgaghfklfafaffd34542afda
+      responses:
+        200:
+          description: success operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Scout"
+
+    post:
+      tags:
+        - scout
+      summary: スカウト作成API
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                content:
+                  type: string
+              required:
+                - title
+                - content
+      responses:
+        200:
+          description: success operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Scout"
+
+  /scouts/{scoutId}:
+    put:
+      tags:
+        - scout
+      summary: スカウト更新API
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                content:
+                  type: string
+              required:
+                - title
+                - content
+      responses:
+        200:
+          description: success operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Scout"
+
+  /scouts/{scoutId}/send:
+    post:
+      tags:
+        - scout
+      summary: スカウト作成API
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+              required:
+                - userId
+      responses:
+        200:
+          description: success operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Scout"
 
 components:
   schemas:
@@ -411,10 +650,10 @@ components:
               $ref: "#/components/schemas/UserExprience"
             github:
               type: string
-            created_at:
+            createdAt:
               type: string
               format: date-time
-            updated_at:
+            updatedAt:
               type: string
               format: date-time
 
@@ -471,10 +710,10 @@ components:
               type: array
               items:
                 $ref: "#/components/schemas/Tag"
-            created_at:
+            createdAt:
               type: string
               format: date-time
-            updated_at:
+            updatedAt:
               type: string
               format: date-time
 
@@ -507,3 +746,30 @@ components:
             updatedAt:
               type: string
               format: date-time
+
+    Message:
+      type: object
+      properties:
+        id:
+          type: string
+        content:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    Scout:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        content:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
