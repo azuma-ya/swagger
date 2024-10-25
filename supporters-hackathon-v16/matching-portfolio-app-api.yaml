@@ -373,12 +373,14 @@ paths:
           schema:
             type: string
             example: fafadfgaghfklfafaffd34542afda
+          required: true
         - name: Authorization
-          in: query
+          in: header
           description: token
           schema:
             type: string
             example: Bearer jwt-token
+          required: true
       responses:
         200:
           description: success operation
