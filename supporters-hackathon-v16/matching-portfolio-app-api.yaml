@@ -381,13 +381,23 @@ paths:
             type: string
             example: Bearer jwt-token
           required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+              required:
+                - text
       responses:
         200:
           description: success operation
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/LogDetail"
+                $ref: "#/components/schemas/Like"
 
   /logs/weekly-summary:
     get:
