@@ -351,6 +351,17 @@ paths:
                 $ref: "#/components/schemas/LogDetail"
 
   /logs/{logId}:
+    get:
+      tags:
+        - log
+      summary: 活動記録詳細取得API
+      responses:
+        200:
+          description: success operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LogDetail"
     put:
       tags:
         - log
