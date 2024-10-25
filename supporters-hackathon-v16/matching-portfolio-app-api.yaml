@@ -262,32 +262,6 @@ paths:
               schema:
                 $ref: "#/components/schemas/CompanySettings"
 
-  /likes:
-    post:
-      tags:
-        - like
-      summary: いいね作成API
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                logId:
-                  type: string
-                text:
-                  type: string
-              required:
-                - text
-                - logId
-      responses:
-        200:
-          description: success operation
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Like"
-
   /logs:
     get:
       tags:
@@ -393,12 +367,18 @@ paths:
         - log
       summary: 活動記録いいねAPI
       parameters:
-        - name: userId
-          in: query
-          description: ユーザーID
+        - name: logId
+          in: path
+          description: ログID
           schema:
             type: string
             example: fafadfgaghfklfafaffd34542afda
+        - name: Authorization
+          in: query
+          description: token
+          schema:
+            type: string
+            example: Bearer jwt-token
       responses:
         200:
           description: success operation
